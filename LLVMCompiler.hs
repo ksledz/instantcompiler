@@ -22,15 +22,16 @@ freshRegister :: LLVMonad String
 freshRegister = do
   oldRegister <- get
   put $ oldRegister + 1
-  return $ "%XD" ++ show (oldRegister + 1)
+  return $ "%reg" ++ show (oldRegister + 1)
 
 stmtsToLLVM :: [Stmt] -> LLVMonad String
 
+-- nie halal w llvmie 
 stmtsToLLVM (SAss string aexpr:rest) = do
   (reg, code) <- aexprToLLVM aexpr
-  varName <- freshRegister
-  llvmRest <- local (Map.insert string varName) $ stmtsToLLVM rest
-  return $ code ++ varName ++ " = " ++ reg ++ "\n " ++ llvmRest
+  --varName <- freshRegister
+  llvmRest <- local (Map.insert string reg) $ stmtsToLLVM rest
+  return $ code ++ llvmRest
 
 stmtsToLLVM (SExp aexpr:rest) = do
   (reg, code) <- aexprToLLVM aexpr
@@ -51,14 +52,14 @@ aexprToLLVM (ExpLit integer) = return (show integer, "")
 aexprToLLVM (ExpAdd ex1 ex2) = opToLLVM ex1 ex2 "add"
 aexprToLLVM (ExpMul ex1 ex2) = opToLLVM ex1 ex2 "mul"
 aexprToLLVM (ExpSub ex1 ex2) = opToLLVM ex1 ex2 "sub"
-aexprToLLVM (ExpDiv ex1 ex2) = opToLLVM ex1 ex2 "div"
+aexprToLLVM (ExpDiv ex1 ex2) = opToLLVM ex1 ex2 "sdiv"
 
 opToLLVM :: Exp -> Exp -> String -> LLVMonad (String, String)
 opToLLVM ex1 ex2 op = do
   (reg1, code1) <- aexprToLLVM ex1
   (reg2, code2) <- aexprToLLVM ex2
   res <- freshRegister
-  return (res, code1 ++ code2 ++ res ++ " = " ++ op ++" " ++ reg1 ++ " " ++ reg2 ++ "\n ")
+  return (res, code1 ++ code2 ++ res ++ " = " ++ op ++" i32 " ++ reg1 ++ " , " ++ reg2 ++ "\n ")
 
 allToLLVM :: Program -> String
 allToLLVM (Prog stmts) = pre ++ evalState(runReaderT (stmtsToLLVM stmts) Map.empty) 0 ++ post
