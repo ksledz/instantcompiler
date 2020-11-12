@@ -18,6 +18,7 @@ import LLVMCompiler
 import JVMCompiler
 import qualified Data.Text as T
 import qualified Data.Maybe
+import System.Process
 
 
 import ErrM
@@ -81,4 +82,6 @@ main = do
   text <- readFile $ head $ args
   case pProgram $ myLLexer $ text of
 	Bad s -> do putStrLn  (s ++ "\n parse failed \n")
-	Ok tree -> do writeFile (outputName $ head $ args) (allToLLVM tree)
+	Ok tree -> do 
+		writeFile (outputName $ head $ args) (allToLLVM tree)
+		callProcess "llvm-as" [outputName $ head $ args]
