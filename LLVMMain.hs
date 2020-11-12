@@ -39,6 +39,9 @@ ico = T.pack(".ins")
 basename :: T.Text -> T.Text
 basename f = Data.Maybe.fromJust(T.stripSuffix ico (last $ T.splitOn slash f))
 
+outputName :: String -> String
+outputName f = T.unpack(Data.Maybe.fromJust(T.stripSuffix ico (T.pack f))) ++ ".ll"
+
 basestring :: String -> String
 basestring f = T.unpack(basename(T.pack f))
 
@@ -78,4 +81,4 @@ main = do
   text <- readFile $ head $ args
   case pProgram $ myLLexer $ text of
 	Bad s -> do putStrLn  (s ++ "\n parse failed \n")
-	Ok tree -> do putStrLn $ allToLLVM tree
+	Ok tree -> do writeFile (outputName $ head $ args) (allToLLVM tree)

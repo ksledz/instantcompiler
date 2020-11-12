@@ -26,7 +26,7 @@ distclean: clean
 	-rm -f DocInstant.* LexInstant.* ParInstant.* LayoutInstant.* SkelInstant.* PrintInstant.* TestInstant.* AbsInstant.* TestInstant ErrM.* SharedString.* Instant.dtd XMLInstant.* info.txt
 
 %.ll: %.ins LLVMMain
-	./LLVMMain $< > $@
+	./LLVMMain $< 
 
 %.e: %.ll
 	clang $< printint.c -o $@
