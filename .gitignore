@@ -1,3 +1,13 @@
 DocInstant.txt
-example.ins
-example.ll
+*.hi
+*.o
+*.x
+*.y
+*.e
+*.ll
+*.j
+*.class
+*.bc
+JVMMain
+LLVMMain
+TestInstant

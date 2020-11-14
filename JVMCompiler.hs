@@ -53,7 +53,8 @@ stmtsToJVM :: [Stmt] -> JVMonad String
 stmtsToJVM (SAss string aexpr:rest) = do
   code <- aexprToJVM aexpr
   map <- get
-  when (Map.member string map)$ modify (Map.insert string (toInteger $ Map.size map))
+  when (not (Map.member string map))$ modify (Map.insert string (1 + (toInteger $ Map.size map)))
+  map <- get
   let id = Map.findWithDefault 0 string map
   jvmRest <- stmtsToJVM rest
   return $ code ++ storeVar id ++"\n" ++ jvmRest
@@ -70,6 +71,7 @@ aexprToJVM :: Exp -> JVMonad (String)
 
 aexprToJVM (ExpVar string) =  do
   var <- get
+  -- UWAGA sprawdzanie niezdefiniowane zmiennej also w llvm 
   let i = Map.findWithDefault 0 string var
   return $ pushVar i ++ "\n"
 
@@ -89,7 +91,7 @@ opToJVM ex1 ex2 op = do
 getOpLimit :: Exp -> Exp -> Integer
 getOpLimit e1 e2 =
   let e1L = getExpLimit e1 in let e2L = getExpLimit e2 in max e1L (1 + e2L)
-
+-- źle 
 getExpLimit :: Exp -> Integer
 getExpLimit (ExpVar _) = 1
 getExpLimit (ExpLit _) = 1
@@ -109,7 +111,7 @@ allToJVM :: Program -> String -> String
 allToJVM (Prog stmts) fname  =
   let (code, map) = runState(runReaderT (stmtsToJVM stmts) 0) Map.empty
   in let lStack = getLimit stmts
-  in let lLocals = Map.size map
+  in let lLocals = 1 + Map.size map -- x -- xDD
 
   in pre fname ++ ".limit stack " ++ show lStack ++"\n.limit locals " ++
     show lLocals ++"\n"++ code ++ post
