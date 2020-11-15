@@ -1,15 +1,14 @@
 
-all: LLVMMain JVMMain TestInstant
+all: insc_llvm insc_jvm TestInstant
 	
 TestInstant: ParInstant.hs LexInstant.hs TestInstant.hs
 	ghc --make TestInstant.hs -o TestInstant
 
-LLVMMain: ParInstant.hs LexInstant.hs LLVMMain.hs LLVMCompiler.hs
-	ghc --make LLVMMain.hs -o LLVMMain
-JVMMain:  ParInstant.hs LexInstant.hs JVMMain.hs JVMCompiler.hs
-	ghc --make JVMMain.hs -o JVMMain
+insc_llvm: ParInstant.hs LexInstant.hs LLVMMain.hs LLVMCompiler.hs
+	ghc --make LLVMMain.hs -o insc_llvm
+insc_jvm:  ParInstant.hs LexInstant.hs JVMMain.hs JVMCompiler.hs
+	ghc --make JVMMain.hs -o insc_jvm
 
-debug: info.txt
 
 ParInstant.y LexInstant.x: Instant.cf
 	bnfc $<
@@ -19,22 +18,20 @@ LexInstant.hs: LexInstant.x
 ParInstant.hs: ParInstant.y
 	happy -gca $<
 
-info.txt: ParInstant.y
-	happy -gca ParInstant.y
 clean:
-	-rm -f *.bak *.log *.aux *.hi *.o *.dvi LLVMMain JVMMain TestInstant
+	-rm -f *.bak *.log *.aux *.hi *.o *.dvi insc_llvm insc_jvm TestInstant
 	-rm -f DocInstant.ps DocInstant.txt
 	-rm -f AbsInstant.hs LexInstant.hs ParInstant.hs PrintInstant.hs TestInstant.hs SkelInstant.hs ErrM.hs ParInstant.y LexInstant.x
 	-rm -f examples/*.{bc,ll,e,j,class}
 
-%.ll: %.ins LLVMMain
-	./LLVMMain $< 
+%.ll: %.ins insc_llvm
+	./insc_llvm $< 
 
 %.e: %.ll
 	clang $< printint.c -o $@
 
-%.j: %.ins JVMMain
-	./JVMMain $<
+%.j: %.ins insc_jvm
+	./insc_jvm $<
 
 
 test-llvm: examples/test01.e examples/test02.e examples/test03.e examples/test04.e examples/test05.e examples/test06.e examples/test07.e

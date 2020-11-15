@@ -1,4 +1,3 @@
-DocInstant.txt
 *.hi
 *.o
 *.x
@@ -8,9 +7,9 @@ DocInstant.txt
 *.j
 *.class
 *.bc
-JVMMain
-LLVMMain
 TestInstant
+insc_llvm
+insc_jvm
 AbsInstant.hs
 LexInstant.hs
 ParInstant.hs
@@ -18,4 +17,5 @@ PrintInstant.hs
 TestInstant.hs
 SkelInstant.hs
 ErrM.hs
+DocInstant.txt
 *.bak
