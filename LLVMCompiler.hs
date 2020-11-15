@@ -1,6 +1,7 @@
 module LLVMCompiler (allToLLVM) where
 
 import Data.Map (Map)
+import Data.Maybe
 import qualified Data.Map as Map
 import Control.Monad.Reader
 import Control.Monad.State
@@ -39,8 +40,7 @@ aexprToLLVM :: Exp -> LLVMonad (String, String)
 
 aexprToLLVM (ExpVar string) =  do
   var <- ask
-  -- TODO: error check
-  return (Map.findWithDefault "" string var, "")
+  return (fromJust (Map.lookup string var), "")
 
 aexprToLLVM (ExpLit integer) = return (show integer, "")
 

@@ -8,6 +8,7 @@ import LLVMCompiler
 import qualified Data.Text as T
 import qualified Data.Maybe
 import System.Process
+import System.Exit
 
 import ErrM
 
@@ -30,7 +31,7 @@ main = do
   args <- getArgs
   text <- readFile $ head $ args
   case pProgram $ myLexer $ text of
-	Bad s -> do putStrLn  (s ++ "\n parse failed \n")
+	Bad s -> die (s ++ "\n parse failed \n")
 	Ok tree -> do 
 		writeFile (outputName $ head $ args) (allToLLVM tree)
 		callProcess "llvm-as" [outputName $ head $ args]

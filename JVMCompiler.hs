@@ -1,6 +1,7 @@
 module JVMCompiler (allToJVM) where
 
 import Data.Map (Map)
+import Data.Maybe
 import qualified Data.Map as Map
 import Control.Monad.State
 
@@ -51,7 +52,7 @@ stmtsToJVM (SAss string aexpr:rest) = do
   map <- get
   when (not (Map.member string map))$ modify (Map.insert string (1 + (toInteger $ Map.size map)))
   map <- get
-  let id = Map.findWithDefault 0 string map
+  let id = fromJust (Map.lookup string map)
   (jvmRest, depth2) <- stmtsToJVM rest
   return (code ++ storeVar id ++"\n" ++ jvmRest, max depth depth2)
 
@@ -68,7 +69,7 @@ aexprToJVM :: Exp -> JVMonad (String, Integer)
 aexprToJVM (ExpVar string) =  do
   var <- get
   -- UWAGA sprawdzanie niezdefiniowane zmiennej also w llvm 
-  let i = Map.findWithDefault 0 string var
+  let i = fromJust (Map.lookup string var)
   return  (pushVar i ++ "\n", 1)
 
 aexprToJVM (ExpLit integer) = return (pushConst integer ++ "\n", 1)
