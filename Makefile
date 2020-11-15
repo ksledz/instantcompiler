@@ -22,10 +22,10 @@ ParInstant.hs: ParInstant.y
 info.txt: ParInstant.y
 	happy -gca ParInstant.y
 clean:
-	-rm -f *.log *.aux *.hi *.o *.dvi
-	-rm -f DocInstant.ps
-distclean: clean
-	-rm -f DocInstant.* LexInstant.* ParInstant.* LayoutInstant.* SkelInstant.* PrintInstant.* TestInstant.* AbsInstant.* TestInstant ErrM.* SharedString.* Instant.dtd XMLInstant.* info.txt
+	-rm -f *.bak *.log *.aux *.hi *.o *.dvi LLVMMain JVMMain TestInstant
+	-rm -f DocInstant.ps DocInstant.txt
+	-rm -f AbsInstant.hs LexInstant.hs ParInstant.hs PrintInstant.hs TestInstant.hs SkelInstant.hs ErrM.hs ParInstant.y LexInstant.x
+	-rm -f examples/*.{bc,ll,e,j,class}
 
 %.ll: %.ins LLVMMain
 	./LLVMMain $< 

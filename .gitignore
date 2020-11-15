@@ -11,3 +11,11 @@ DocInstant.txt
 JVMMain
 LLVMMain
 TestInstant
+AbsInstant.hs
+LexInstant.hs
+ParInstant.hs
+PrintInstant.hs
+TestInstant.hs
+SkelInstant.hs
+ErrM.hs
+*.bak

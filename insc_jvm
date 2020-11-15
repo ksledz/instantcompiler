@@ -1,6 +1,0 @@
-#!/bin/bash
-output=$(stack run -- --jvm $1)
-base=${1%.ins}
-printf "%s" "$output" > $base.j
-java -jar lib/jasmin.jar -d $(dirname $1) $base.j
-

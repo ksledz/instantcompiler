@@ -2,11 +2,8 @@ module LLVMCompiler (allToLLVM) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
-import qualified Data.Char as Char
-import Control.Monad (void)
 import Control.Monad.Reader
 import Control.Monad.State
-import Data.Void
 
 import AbsInstant
 
@@ -26,17 +23,15 @@ freshRegister = do
 
 stmtsToLLVM :: [Stmt] -> LLVMonad String
 
--- nie halal w llvmie 
 stmtsToLLVM (SAss string aexpr:rest) = do
   (reg, code) <- aexprToLLVM aexpr
-  --varName <- freshRegister
   llvmRest <- local (Map.insert string reg) $ stmtsToLLVM rest
   return $ code ++ llvmRest
 
 stmtsToLLVM (SExp aexpr:rest) = do
   (reg, code) <- aexprToLLVM aexpr
   llvmRest <-  stmtsToLLVM rest
-  return $ code ++ "call void @printInt(i32 " ++ reg ++ ")\n " ++ llvmRest
+  return $ code ++ "call void @printInt(i32 " ++ reg ++ ")\n" ++ llvmRest
 
 stmtsToLLVM ([]) = return ""
 
@@ -44,7 +39,7 @@ aexprToLLVM :: Exp -> LLVMonad (String, String)
 
 aexprToLLVM (ExpVar string) =  do
   var <- ask
-
+  -- TODO: error check
   return (Map.findWithDefault "" string var, "")
 
 aexprToLLVM (ExpLit integer) = return (show integer, "")
@@ -59,7 +54,7 @@ opToLLVM ex1 ex2 op = do
   (reg1, code1) <- aexprToLLVM ex1
   (reg2, code2) <- aexprToLLVM ex2
   res <- freshRegister
-  return (res, code1 ++ code2 ++ res ++ " = " ++ op ++" i32 " ++ reg1 ++ " , " ++ reg2 ++ "\n ")
+  return (res, code1 ++ code2 ++ res ++ " = " ++ op ++" i32 " ++ reg1 ++ " , " ++ reg2 ++ "\n")
 
 allToLLVM :: Program -> String
 allToLLVM (Prog stmts) = pre ++ evalState(runReaderT (stmtsToLLVM stmts) Map.empty) 0 ++ post

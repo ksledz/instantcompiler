@@ -1,7 +1,0 @@
-#!/bin/bash
-output=$(stack run -- --llvm $1)
-base=${1%.ins}
-printf "%s" "$output" > $base.ll
-llvm-as -o $base2.bc $base.ll
-llvm-link -o $base.bc $base2.bc lib/runtime.bc
-rm $base2.bc

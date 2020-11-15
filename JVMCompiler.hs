@@ -2,18 +2,14 @@ module JVMCompiler (allToJVM) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
-import qualified Data.Char as Char
-import Control.Monad (void)
-import Control.Monad.Reader
 import Control.Monad.State
-import Data.Void
 
 import AbsInstant
 
 
 pre :: String -> String
 pre fname = ".class  public " ++ fname ++ "\n" ++
-  ".super  java/lang/Object\n" ++
+  ".super java/lang/Object\n" ++
   ".method public <init>()V\n" ++
   "aload_0\n" ++
   "invokespecial java/lang/Object/<init>()V\n" ++
@@ -23,7 +19,7 @@ pre fname = ".class  public " ++ fname ++ "\n" ++
 post :: String
 post = "return \n.end method"
 
-type JVMonad a = ReaderT (Integer) (State (Map Ident Integer)) a
+type JVMonad a = State (Map Ident Integer) a
 
 pushConst :: Integer -> String
 pushConst i
@@ -44,9 +40,9 @@ storeVar i
 
 
 printStream :: String
-printStream = "getstatic  java/lang/System/out Ljava/io/PrintStream;\n"
+printStream = "getstatic java/lang/System/out Ljava/io/PrintStream;\n"
 invokeVirtual :: String
-invokeVirtual = "invokevirtual  java/io/PrintStream/println(I)V\n"
+invokeVirtual = "invokevirtual java/io/PrintStream/println(I)V\n"
 
 stmtsToJVM :: [Stmt] -> JVMonad String
 
@@ -109,7 +105,7 @@ getLimit = foldr (max . getStmtLimit) 1
 
 allToJVM :: Program -> String -> String
 allToJVM (Prog stmts) fname  =
-  let (code, map) = runState(runReaderT (stmtsToJVM stmts) 0) Map.empty
+  let (code, map) = runState(stmtsToJVM stmts) Map.empty
   in let lStack = getLimit stmts
   in let lLocals = 1 + Map.size map -- x -- xDD
 
