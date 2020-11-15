@@ -1,28 +1,28 @@
 
 all: insc_llvm insc_jvm TestInstant
 	
-TestInstant: ParInstant.hs LexInstant.hs TestInstant.hs
-	ghc --make TestInstant.hs -o TestInstant
+TestInstant: src/ParInstant.hs src/LexInstant.hs src/TestInstant.hs
+	ghc -isrc --make src/TestInstant.hs -o TestInstant
 
-insc_llvm: ParInstant.hs LexInstant.hs LLVMMain.hs LLVMCompiler.hs
-	ghc --make LLVMMain.hs -o insc_llvm
-insc_jvm:  ParInstant.hs LexInstant.hs JVMMain.hs JVMCompiler.hs
-	ghc --make JVMMain.hs -o insc_jvm
+insc_llvm: src/ParInstant.hs src/LexInstant.hs src/LLVMMain.hs src/LLVMCompiler.hs
+	ghc -isrc --make src/LLVMMain.hs -o insc_llvm
+insc_jvm: src/ParInstant.hs src/LexInstant.hs src/JVMMain.hs src/JVMCompiler.hs
+	ghc -isrc --make src/JVMMain.hs -o insc_jvm
 
 
-ParInstant.y LexInstant.x: Instant.cf
-	bnfc $<
+src/ParInstant.y src/LexInstant.x: src/Instant.cf
+	bnfc -o src/  $<
 
-LexInstant.hs: LexInstant.x
+src/LexInstant.hs: src/LexInstant.x
 	alex -g $<
-ParInstant.hs: ParInstant.y
+src/ParInstant.hs: src/ParInstant.y
 	happy -gca $<
 
 clean:
-	-rm -f *.bak *.log *.aux *.hi *.o *.dvi insc_llvm insc_jvm TestInstant
-	-rm -f DocInstant.ps DocInstant.txt
-	-rm -f AbsInstant.hs LexInstant.hs ParInstant.hs PrintInstant.hs TestInstant.hs SkelInstant.hs ErrM.hs ParInstant.y LexInstant.x
-	-rm -f examples/*.{bc,ll,e,j,class}
+	-rm -f src/*.bak src/*.log src/*.aux src/*.hi src/*.o src/*.dvi insc_llvm insc_jvm TestInstant
+	-rm -f src/DocInstant.ps src/DocInstant.txt
+	-rm -f src/AbsInstant.hs src/LexInstant.hs src/ParInstant.hs src/PrintInstant.hs src/TestInstant.hs src/SkelInstant.hs src/ErrM.hs src/ParInstant.y src/LexInstant.x
+	-rm -f examples/*.bc examples/*.ll examples/*.e examples/*.j examples/*.class
 
 %.ll: %.ins insc_llvm
 	./insc_llvm $< 
