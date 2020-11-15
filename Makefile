@@ -1,5 +1,5 @@
 
-all: insc_llvm insc_jvm TestInstant
+all: insc_llvm insc_jvm
 	
 TestInstant: src/ParInstant.hs src/LexInstant.hs src/TestInstant.hs
 	ghc -isrc --make src/TestInstant.hs -o TestInstant
@@ -22,26 +22,24 @@ clean:
 	-rm -f src/*.bak src/*.log src/*.aux src/*.hi src/*.o src/*.dvi insc_llvm insc_jvm TestInstant
 	-rm -f src/DocInstant.ps src/DocInstant.txt
 	-rm -f src/AbsInstant.hs src/LexInstant.hs src/ParInstant.hs src/PrintInstant.hs src/TestInstant.hs src/SkelInstant.hs src/ErrM.hs src/ParInstant.y src/LexInstant.x
-	-rm -f examples/*.bc examples/*.ll examples/*.e examples/*.j examples/*.class
+	-rm -f examples/*.bc examples/*.ll  examples/*.j examples/*.class
 
 %.ll: %.ins insc_llvm
 	./insc_llvm $< 
 
-%.e: %.ll
-	clang $< printint.c -o $@
 
 %.j: %.ins insc_jvm
 	./insc_jvm $<
 
 
-test-llvm: examples/test01.e examples/test02.e examples/test03.e examples/test04.e examples/test05.e examples/test06.e examples/test07.e
-	examples/test01.e | cmp - examples/test01.output
-	examples/test02.e | cmp - examples/test02.output
-	examples/test03.e | cmp - examples/test03.output
-	examples/test04.e | cmp - examples/test04.output
-	examples/test05.e | cmp - examples/test05.output
-	examples/test06.e | cmp - examples/test06.output
-	examples/test07.e | cmp - examples/test07.output
+test-llvm: examples/test01.ll examples/test02.ll examples/test03.ll examples/test04.ll examples/test05.ll examples/test06.ll examples/test07.ll
+	lli examples/test01.bc | cmp - examples/test01.output
+	lli examples/test02.bc | cmp - examples/test02.output
+	lli examples/test03.bc | cmp - examples/test03.output
+	lli examples/test04.bc | cmp - examples/test04.output
+	lli examples/test05.bc | cmp - examples/test05.output
+	lli examples/test06.bc | cmp - examples/test06.output
+	lli examples/test07.bc | cmp - examples/test07.output
 
 test-jvm: examples/test01.j examples/test02.j examples/test03.j examples/test04.j examples/test05.j examples/test06.j examples/test07.j
 	(cd examples; java test01) | cmp - examples/test01.output

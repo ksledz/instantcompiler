@@ -10,7 +10,7 @@ import AbsInstant
 
 
 pre :: String
-pre = "declare void @printInt(i32) ; \n define i32 @main() { \n "
+pre = "declare i32 @printf(i8*, ...) \n @.fmt = constant [4 x i8] c\"%d\\0A\\00\" \n define i32 @main() { \n "
 post :: String
 post = "ret i32 0 \n }"
 
@@ -32,7 +32,7 @@ stmtsToLLVM (SAss string aexpr:rest) = do
 stmtsToLLVM (SExp aexpr:rest) = do
   (reg, code) <- aexprToLLVM aexpr
   llvmRest <-  stmtsToLLVM rest
-  return $ code ++ "call void @printInt(i32 " ++ reg ++ ")\n" ++ llvmRest
+  return $ code ++ "call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @.fmt, i32 0, i32 0), i32 " ++ reg ++ ")\n" ++ llvmRest
 
 stmtsToLLVM ([]) = return ""
 
