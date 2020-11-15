@@ -10,8 +10,6 @@ insc_jvm: src/ParInstant.hs src/LexInstant.hs src/JVMMain.hs src/JVMCompiler.hs
 	ghc -isrc --make src/JVMMain.hs -o insc_jvm
 
 
-src/ParInstant.y src/LexInstant.x: src/Instant.cf
-	bnfc -o src/  $<
 
 src/LexInstant.hs: src/LexInstant.x
 	alex -g $<
@@ -20,8 +18,7 @@ src/ParInstant.hs: src/ParInstant.y
 
 clean:
 	-rm -f src/*.bak src/*.log src/*.aux src/*.hi src/*.o src/*.dvi insc_llvm insc_jvm TestInstant
-	-rm -f src/DocInstant.ps src/DocInstant.txt
-	-rm -f src/AbsInstant.hs src/LexInstant.hs src/ParInstant.hs src/PrintInstant.hs src/TestInstant.hs src/SkelInstant.hs src/ErrM.hs src/ParInstant.y src/LexInstant.x
+	-rm -f src/LexInstant.hs src/ParInstant.hs
 	-rm -f examples/*.bc examples/*.ll  examples/*.j examples/*.class
 
 %.ll: %.ins insc_llvm
@@ -49,3 +46,6 @@ test-jvm: examples/test01.j examples/test02.j examples/test03.j examples/test04.
 	(cd examples; java test05) | cmp - examples/test05.output
 	(cd examples; java test06) | cmp - examples/test06.output
 	(cd examples; java test07) | cmp - examples/test07.output
+
+dist: 
+	tar -czf ks386105.tar.gz Makefile README src/ lib/ examples/

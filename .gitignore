@@ -1,8 +1,5 @@
 *.hi
 *.o
-*.x
-*.y
-*.e
 *.ll
 *.j
 *.class
@@ -10,12 +7,7 @@
 TestInstant
 insc_llvm
 insc_jvm
-AbsInstant.hs
 LexInstant.hs
 ParInstant.hs
-PrintInstant.hs
-TestInstant.hs
-SkelInstant.hs
-ErrM.hs
-DocInstant.txt
 *.bak
+ks386105.tar.gz
