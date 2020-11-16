@@ -1,0 +1,6 @@
+- szczegóły kompilacji i uruchamiania programu:
+program kompiluje się za pomocą polecenia make, które wywołuje generator lekserów alex, generator parserów happy i kompiluje całość za pomocą ghc. kompilator napisany jest w języku haskell z użyciem bnfc. makefile zawiera opcję testowania kopilatora na przykładach zawartych w podfolderze examples/ (dostarczonych w treści zadania). kompilator dla jvm realizuje wersję z optymalizacją zużycia stosu, nie wymaga żadnego dodatkowego kodu w czasie wykonania poza tym, co sam emituje.
+- używane narzędzia i biblioteki
+bnfc, happy, slex, ghc. makefile nie wywołuje bnfc ponieważ bnfc nie ma na studentsie, więc makefile używa już wygenerowanego przez bnfc kodu.
+- struktura katalogów projektu
+w katalogu src/ znajdują się: Instant.cf pliki wygenerowane przez bnfc, pliki zawierające logikę kompilatora dla llvm (LLVMMain.hs, LLVMCompiler.hs) i dla jvm (JVMMain.hs, JVMCompiler.hs). w katalogu examples/ zawarte są przykłady z treści zadania. w katalogu lib/ zawarty jest jasmin (jako .jar)
